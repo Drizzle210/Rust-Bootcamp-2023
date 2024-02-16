@@ -8,11 +8,16 @@ enum MessageOne {
     ChangeColor(i32, i32, i32),
 }
 fn show_message(msg: MessageOne) {
-    println!("{}", msg);
+    match msg {
+        MessageOne::Quit => println!("Quit"),
+        MessageOne::Move { x, y } => println!("{}{}" , x , y),
+        MessageOne::Write(s) => println!("{}" , s),
+        MessageOne::ChangeColor(x ,y,z ) => println!("{}{}{}" ,x , y , z),
+    }
 }
 
 fn exercise1() {
-    let msgs: __ = [
+    let msgs:[MessageOne; 3] = [
         MessageOne::Quit,
         MessageOne::Move { x: 1, y: 3 },
         MessageOne::ChangeColor(255, 255, 0),
@@ -29,6 +34,10 @@ fn exercise1() {
 // Run tests
 enum Message {
     // TODO: implement the message variant types based on their usage below
+    ChangeColor(u8 , u8 , u8),
+    Quit,
+    Echo(String),
+    Move(Point),
 }
 
 struct Point {
@@ -60,6 +69,12 @@ impl State {
     }
 
     fn process(&mut self, message: Message) {
+        match message {
+            Message::ChangeColor(x , y , z) => self.change_color((x , y , z)),
+            Message::Echo(s) => self.echo(s),
+            Message::Move(p) => self.move_position(p),
+            Message::Quit => self.quit()
+        }
         // TODO: create a match expression to process the different message variants
         // Remember: When passing a tuple as a function argument, you'll need extra parentheses: fn function((t, u, p, l, e))
     }
@@ -69,6 +84,7 @@ impl State {
 // Exercise 3
 // Fix the errors
 // Run tests
+#[derive(Debug)]
 enum Direction {
     North,
     East,
@@ -79,7 +95,21 @@ enum Direction {
 impl Direction {
     fn opposite(&self) -> Direction {
         match self {
-            //TODO
+            Direction::East => Direction::West,
+            Direction::North => Direction::South,
+            Direction::West => Direction::East,
+            Direction::South => Direction::North,
+        }
+    }
+}
+impl PartialEq for Direction {
+    fn eq(&self , other: &Self) -> bool {
+        match (self , other) {
+            (Direction::North , Direction::North)  => true,
+            (Direction::South , Direction::South)  => true,
+            (Direction::West , Direction::West)  => true,
+            (Direction::East , Direction::East)  => true,
+            _ => false
         }
     }
 }
@@ -96,10 +126,14 @@ enum Operation {
     Divide,
 }
 
+
 // Perform arithmetic operations
 fn perform_operation(operation: Operation, num1: f64, num2: f64) -> f64 {
     match operation {
-        // TODO
+        Operation::Add => num1 + num2,
+        Operation::Divide => num1 / num2,
+        Operation::Multiply => num1 * num2,
+        Operation::Subtract => num1 - num2,
     }
 }
 
